@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
  
 class ClockView extends StatefulWidget {
-  const ClockView({ Key? key }) : super(key: key);
 
+  final double size;
+
+  const ClockView({Key? key, required this.size}) : super(key: key);
   @override
   _ClockViewState createState() => _ClockViewState();
 }
@@ -25,8 +27,8 @@ class _ClockViewState extends State<ClockView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-       width:300,
-       height:300,
+       width:widget.size,
+       height:widget.size,
        child:Transform.rotate(
            angle:-pi/2,
             child: CustomPaint(
@@ -57,7 +59,7 @@ class ClockPainter extends CustomPainter
       var outlineBrush=Paint()
       ..color = Color(0xFFEACEFF)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 16;
+      ..strokeWidth = size.width/20;
 
       var centerFillBrush=Paint()
       ..color = Color(0xFFEACEFF);
@@ -66,19 +68,19 @@ class ClockPainter extends CustomPainter
       ..color = Colors.orange.shade300
       ..style = PaintingStyle.stroke
       ..strokeCap=StrokeCap.round
-      ..strokeWidth = 8;
+      ..strokeWidth = size.width/60;
 
        var minHandBrush=Paint()
       ..shader=RadialGradient(colors:[Colors.lightBlue,Colors.pink]).createShader(Rect.fromCircle(center:center,radius:radius))
       ..style = PaintingStyle.stroke
       ..strokeCap=StrokeCap.round
-      ..strokeWidth = 16;
+      ..strokeWidth = size.width/30;
 
        var hourHandBrush=Paint()
        ..shader=RadialGradient(colors:[Color(0xFFEA74AB),Color(0xFFC279FB)]).createShader(Rect.fromCircle(center:center,radius:radius))
        ..style = PaintingStyle.stroke
        ..strokeCap=StrokeCap.round
-       ..strokeWidth = 16;
+       ..strokeWidth = size.width/24;
 
         var dashBrush = Paint()
         ..color = Color(0xFFEAECFF)
@@ -86,31 +88,31 @@ class ClockPainter extends CustomPainter
         ..strokeCap = StrokeCap.round
         ..strokeWidth = 1;
 
-      canvas.drawCircle(center,radius-40,fillBrush);
-      canvas.drawCircle(center,radius-40,outlineBrush);
+      canvas.drawCircle(center,radius*0.75,fillBrush);
+      canvas.drawCircle(center,radius*0.75,outlineBrush);
 
-      var secHandX=centerX+80*cos(dateTime.second*6*pi/180);
-      var secHandy=centerX+80*sin(dateTime.second*6*pi/180);
+      var secHandX=centerX+radius*0.6*cos(dateTime.second*6*pi/180);
+      var secHandy=centerX+radius*0.6*sin(dateTime.second*6*pi/180);
 
       canvas.drawLine(center,Offset(secHandX,secHandy),secHandBrush);
 
-      var minHandX=centerX+80*cos(dateTime.minute*6*pi/180);
-      var minHandy=centerX+80*sin(dateTime.minute*6*pi/180);
+      var minHandX=centerX+radius*0.6*cos(dateTime.minute*6*pi/180);
+      var minHandy=centerX+radius*0.6*sin(dateTime.minute*6*pi/180);
 
 
       canvas.drawLine(center,Offset(minHandX,minHandy),minHandBrush);
 
 
-      var hourHandX=centerX+60*cos(dateTime.hour*30*pi/180);
-      var hourHandy=centerX+60*sin(dateTime.hour*30*pi/180);
+      var hourHandX=centerX+radius*0.4*cos(dateTime.hour*30*pi/180);
+      var hourHandy=centerX+radius*0.4*sin(dateTime.hour*30*pi/180);
 
 
       canvas.drawLine(center,Offset(hourHandX,hourHandy),hourHandBrush);
 
-      canvas.drawCircle(center,16,centerFillBrush);
+      canvas.drawCircle(center,radius*0.12,centerFillBrush);
 
       var outerCircleRadius = radius;
-      var innerCircleRadius = radius - 14;
+      var innerCircleRadius = radius*0.9;
       for (double i = 0; i < 360; i += 30) 
       {
         var x1 = centerX + outerCircleRadius * cos(i * pi / 180);
