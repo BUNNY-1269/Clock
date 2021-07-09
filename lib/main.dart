@@ -1,7 +1,13 @@
+import 'package:firstapp/menu_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 
 import 'clock_view.dart';
+import 'constants/theme_data.dart';
+import 'enums.dart';
+import 'package:firstapp/data.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,8 +30,11 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home:ChangeNotifierProvider<MenuInfo>(
+        create: (context) => MenuInfo(MenuType.clock, imageSource: '', title: ''), 
+        child: MyHomePage(title: 'Flutter Demo Home Page')),
     );
   }
 }
@@ -73,125 +82,141 @@ class _MyHomePageState extends State<MyHomePage> {
         children:<Widget> [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children:<Widget>[
-              buildMenuButton('Clock','clock_icon.png'),
-              buildMenuButton('Alarm','alarm_icon.png'),
-              buildMenuButton('Timer','timer_icon.png'),
-              buildMenuButton('Stopwatch','stopwatch_icon.png'),
-            ]
+        children: 
+          menuItems.map((currentMenuInfo) => buildMenuButton(currentMenuInfo))
+          .toList(),
           ),
           VerticalDivider(color: Colors.white54,
           width:1,
           ),
           Expanded(
-                      child: Container(
-              padding: EdgeInsets.symmetric(horizontal:32, vertical:64),
-              color: Color(0xFF2D2F41),
-              // Center is a layout widget. It takes a single child and positions it
-              // in the middle of the parent.
-              child: Column(
-                crossAxisAlignment:CrossAxisAlignment.start,
-                children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      fit: FlexFit.tight,
-                      child: Text(
-                      'Clock',
-                      style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w700 , color: Colors.white,fontSize: 24),
+              child: Consumer<MenuInfo>(
+
+                builder: (BuildContext context,MenuInfo value,Widget child) {
+                    //  if(value.menuType!=MenuType.clock) return Container();
+                     
+                      return Container(
+                padding: EdgeInsets.symmetric(horizontal:32, vertical:64),
+                color: Color(0xFF2D2F41),
+                // Center is a layout widget. It takes a single child and positions it
+                // in the middle of the parent.
+                child: Column(
+                  crossAxisAlignment:CrossAxisAlignment.start,
+                  children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: Text(
+                        'Clock',
+                        style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w700 , color: Colors.white,fontSize: 24),
+                        ),
                       ),
+                      Flexible(
+                          flex:2,
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                             formattedTime,
+                            style:TextStyle(fontFamily:'avenir', color: Colors.white,fontSize: 64),
+                            ),
+                             Text(
+                         formattedDate,
+                        style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w300, color: Colors.white,fontSize: 20),
+                        ),
+                          ],
+                           
+                        ),
+                      ),
+                        
+                    Flexible(
+                        
+                        flex: 4,
+                        fit: FlexFit.tight,
+                        child:Align(alignment: Alignment.center, child:ClockView(size: MediaQuery.of(context).size.height/4,
+                        // Column is also a layout widget. It takes a list of children and
+                        // arranges them vertically. By default, it sizes itself to fit its
+                        // children horizontally, and tries to be as tall as its parent.
+                        //
+                        // Invoke "debug painting" (press "p" in the console, choose the
+                        // "Toggle Debug Paint" action from the Flutter Inspector in Android
+                        // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+                        // to see the wireframe for each widget.
+                        //
+                        // Column has various properties to control how it sizes itself and
+                        // how it positions its children. Here we use mainAxisAlignment to
+                        // center the children vertically; the main axis here is the vertical
+                        // axis because Columns are vertical (the cross axis would be
+                        // horizontal).
+                      ),
+                        ),
                     ),
                     Flexible(
-                        flex:2,
+                        flex: 2,
+                        fit: FlexFit.tight,
                         child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                           formattedTime,
-                          style:TextStyle(fontFamily:'avenir', color: Colors.white,fontSize: 64),
-                          ),
-                           Text(
-                       formattedDate,
-                      style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w300, color: Colors.white,fontSize: 20),
-                      ),
-                        ],
-                         
-                      ),
-                    ),
-                      
-                  Flexible(
-                      
-                      flex: 4,
-                      fit: FlexFit.tight,
-                      child:Align(alignment: Alignment.center, child:ClockView(size: MediaQuery.of(context).size.height/4,
-                      // Column is also a layout widget. It takes a list of children and
-                      // arranges them vertically. By default, it sizes itself to fit its
-                      // children horizontally, and tries to be as tall as its parent.
-                      //
-                      // Invoke "debug painting" (press "p" in the console, choose the
-                      // "Toggle Debug Paint" action from the Flutter Inspector in Android
-                      // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-                      // to see the wireframe for each widget.
-                      //
-                      // Column has various properties to control how it sizes itself and
-                      // how it positions its children. Here we use mainAxisAlignment to
-                      // center the children vertically; the main axis here is the vertical
-                      // axis because Columns are vertical (the cross axis would be
-                      // horizontal).
-                    ),
-                      ),
-                  ),
-                  Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Timezone',
-                          style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w500 ,color: Colors.white,fontSize: 24),
-                          ),
-                           SizedBox(height:16),
-                      Row(
-                        children:<Widget>[
-                          Icon(
-                            Icons.language,
-                           color:Colors.white
-                           ),
-                            SizedBox(width:16),
-                            Text(
-                            'UTC'+offsetSign+timezoneString,
-                            style:TextStyle(fontFamily:'avenir', color: Colors.white,fontSize: 14),
+                            'Timezone',
+                            style:TextStyle(fontFamily:'avenir',fontWeight:FontWeight.w500 ,color: Colors.white,fontSize: 24),
+                            ),
+                             SizedBox(height:16),
+                        Row(
+                          children:<Widget>[
+                            Icon(
+                              Icons.language,
+                             color:Colors.white
                              ),
+                              SizedBox(width:16),
+                              Text(
+                              'UTC'+offsetSign+timezoneString,
+                              style:TextStyle(fontFamily:'avenir', color: Colors.white,fontSize: 14),
+                               ),
 
-                        ]
+                          ]
+                        ),
+                        ],
                       ),
-                      ],
                     ),
-                  ),
-                    
-                ],
-              )
-            ),
+                      
+                  ],
+                )
+            );
+          },
+                
+              
+              ),
           ),
         ],
       )
     );
   }
 
-  Padding buildMenuButton(String title,String image) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: TextButton(onPressed: () {}, child: Column(
-                    children:<Widget>[
-                      Image.asset(image,scale: 1.5,),
-                      SizedBox(height:16),
-                      Text(
-                       title, 
-                       style: TextStyle(
-                        fontFamily:'avenir', color: Colors.white, fontSize:14)
-                      )
-                    ]
-              )),
+  Widget buildMenuButton(MenuInfo currentMenuInfo) {
+    return Consumer<MenuInfo>(
+          builder: (BuildContext context, MenuInfo value,Widget child) {
+              return FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:BorderRadius.only(topRight: Radius.circular(32)) ),
+                     padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0),
+                     color:currentMenuInfo.menuType ==value.menuType ? CustomColors.menuBackgroundColor:Colors.transparent,
+                     onPressed: () {
+                         var menuInfo = Provider.of<MenuInfo>(context,listen: false);
+                         menuInfo.upadateMenu(currentMenuInfo);
+                     }, child: Column(
+                     children:<Widget>[
+                       Image.asset(currentMenuInfo.imageSource,scale: 1.5,),
+                       SizedBox(height:16),
+                       Text(
+                        currentMenuInfo.title, 
+                        style: TextStyle(
+                         fontFamily:'avenir', color: Colors.white, fontSize:14)
+                       )
+                     ]
+               )
+               );
+          },
     );
   }
 }
