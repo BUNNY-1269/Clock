@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 
+import 'alarm_page.dart';
 import 'clock_view.dart';
 import 'constants/theme_data.dart';
 import 'enums.dart';
@@ -93,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Consumer<MenuInfo>(
 
                 builder: (BuildContext context,MenuInfo value,Widget child) {
-                    //  if(value.menuType!=MenuType.clock) return Container();
+                     if(value.menuType!=MenuType.clock) return AlarmPage();
                      
                       return Container(
                 padding: EdgeInsets.symmetric(horizontal:32, vertical:64),
